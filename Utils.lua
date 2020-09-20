@@ -112,9 +112,9 @@ end
 -- GameTooltip
 local colorNotUsable = { r = 1, g = 0, b = 0 }
 function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
-    local bckQuestLogSelection = GetQuestLogSelection()  -- backup Quest Log selection
-    local questLogIndex = GetQuestLogIndexByID(questID)
-    SelectQuestLogEntry(questLogIndex)	-- for num Choices
+    local bckQuestLogSelection = C_QuestLog.GetSelectedQuest()  -- backup Quest Log selection
+    local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID)
+    C_QuestLog.SetSelectedQuest(questID)	-- for num Choices
 
     local xp = GetQuestLogRewardXP(questID)
     local money = GetQuestLogRewardMoney(questID)
@@ -122,7 +122,7 @@ function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
     local numQuestCurrencies = GetNumQuestLogRewardCurrencies(questID)
     local numQuestRewards = GetNumQuestLogRewards(questID)
     local numQuestSpellRewards = GetNumQuestLogRewardSpells(questID)
-    local numQuestChoices = GetNumQuestLogChoices()
+    local numQuestChoices = GetNumQuestLogChoices(questID)
     local honor = GetQuestLogRewardHonor(questID)
     if xp > 0 or
             money > 0 or
@@ -132,7 +132,7 @@ function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
             numQuestSpellRewards > 0 or
             numQuestChoices > 0 or
             honor > 0 then
-        local isQuestWorldQuest = QuestUtils_IsQuestWorldQuest(questID)
+        local isQuestWorldQuest = C_QuestLog.IsWorldQuest(questID)
         local isWarModeDesired = C_PvP.IsWarModeDesired()
         local questHasWarModeBonus = C_QuestLog.QuestHasWarModeBonus(questID)
         tooltip:AddLine(" ")
@@ -206,7 +206,7 @@ function KT.GameTooltip_AddQuestRewardsToTooltip(tooltip, questID, isBonus)
         end
     end
 
-    SelectQuestLogEntry(bckQuestLogSelection)  -- restore Quest Log selection
+    C_QuestLog.SetSelectedQuest(bckQuestLogSelection)  -- restore Quest Log selection
 end
 
 -- =====================================================================================================================

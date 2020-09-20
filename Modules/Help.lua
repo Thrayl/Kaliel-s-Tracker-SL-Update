@@ -231,7 +231,7 @@ local function SetupTutorials()
 					self[i].shineLeft = db.hdrOtherButtons and -55 or -15
 				end
 			elseif i == 3 then
-				local questID, _ = GetQuestWatchInfo(1)
+				local questID, _ = C_QuestLog.GetQuestWatchType(1)
 				local block = QUEST_TRACKER_MODULE.usedBlocks[questID]
 				if block then
 					self[i].shine = block
@@ -241,9 +241,9 @@ local function SetupTutorials()
 			elseif i == 6 then
 				self[i].shine = KTF.ActiveButton
 			elseif i == 10 then
-				for j=1, GetNumQuestWatches() do
-					local questID = GetQuestWatchInfo(j)
-					local hasLocalPOI = select(16, GetQuestWatchInfo(j))
+				for j=1, C_QuestLog.GetNumQuestWatches() do
+					local questID = C_QuestLog.GetQuestWatchType(j)
+					local hasLocalPOI = select(16, C_QuestLog.GetQuestWatchType(j))
 					local block = QUEST_TRACKER_MODULE.usedBlocks[questID]
 					if block and (hasLocalPOI or block.questCompleted) then
 						self[i].shine = QuestPOI_FindButton(ObjectiveTrackerFrame.BlocksFrame, questID)

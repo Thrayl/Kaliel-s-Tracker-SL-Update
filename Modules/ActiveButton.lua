@@ -62,43 +62,43 @@ local function SetFrames()
 	eventFrame:RegisterEvent("QUEST_POI_UPDATE")
 	eventFrame:RegisterEvent("UPDATE_EXTRA_ACTIONBAR")
 	eventFrame:RegisterEvent("UPDATE_BINDINGS")
-	
+
 	-- Button frame
 	if not KTF.ActiveButton then
 		local name = addonName.."ActiveButton"
 		local button = CreateFrame("Button", name, bar, "SecureActionButtonTemplate")
 		button:SetSize(52, 52)
 		button:SetPoint("CENTER", 0, 0.5)
-		
+
 		button.icon = button:CreateTexture(name.."Icon", "BACKGROUND")
 		button.icon:SetPoint("TOPLEFT", 0, -1)
 		button.icon:SetPoint("BOTTOMRIGHT", 0, -1)
-		
+
 		button.Style = button:CreateTexture(name.."Style", "OVERLAY")
 		button.Style:SetSize(256, 128)
 		button.Style:SetPoint("CENTER", -2, 0)
 		button.Style:SetTexture("Interface\\ExtraButton\\ChampionLight")
-		
+
 		button.Count = button:CreateFontString(name.."Count", "OVERLAY", "NumberFontNormal")
 		button.Count:SetJustifyH("RIGHT")
 		button.Count:SetPoint("BOTTOMRIGHT", button.icon, -2, 2)
-		
+
 		button.Cooldown = CreateFrame("Cooldown", name.."Cooldown", button, "CooldownFrameTemplate")
 		button.Cooldown:ClearAllPoints()
 		button.Cooldown:SetPoint("TOPLEFT", 4, -4)
 		button.Cooldown:SetPoint("BOTTOMRIGHT", -3, 2)
-		
+
 		button.HotKey = button:CreateFontString(name.."HotKey", "ARTWORK", "NumberFontNormalSmallGray")
 		button.HotKey:SetSize(30, 10)
 		button.HotKey:SetJustifyH("RIGHT")
 		button.HotKey:SetText(RANGE_INDICATOR)
 		button.HotKey:SetPoint("TOPRIGHT", button.icon, -2, -7)
-		
+
 		button.text = button:CreateFontString(name.."Text", "ARTWORK", "NumberFontNormalSmall")
 		button.text:SetSize(20, 10)
 		button.text:SetJustifyH("LEFT")
 		button.text:SetPoint("TOPLEFT", button.icon, 4, -7)
-		
+
 		button:SetScript("OnEvent", QuestObjectiveItem_OnEvent)
 		button:SetScript("OnUpdate", QuestObjectiveItem_OnUpdate)
 		button:SetScript("OnShow", QuestObjectiveItem_OnShow)
@@ -107,7 +107,7 @@ local function SetFrames()
 		button:SetScript("OnLeave", QuestObjectiveItem_OnLeave)
 		button:RegisterForClicks("AnyUp")
 		button:SetAttribute("type","item")
-		
+
 		button:SetPushedTexture("Interface\\Buttons\\UI-Quickslot-Depress")
 		do local tex = button:GetPushedTexture()
 			tex:SetPoint("TOPLEFT", 0, -1)
@@ -119,7 +119,7 @@ local function SetFrames()
 			tex:SetPoint("BOTTOMRIGHT", 0, -1)
 		end
 		button:Hide()
-		
+
 		KT:Masque_AddButton(button, 2)
 		KTF.ActiveButton = button
 	end
@@ -131,10 +131,10 @@ end
 
 function M:OnInitialize()
 	_DBG("|cffffff00Init|r - "..self:GetName(), true)
-	
+
 	self.timer = 0
 	self.timerID = nil
-	
+
 	db = KT.db.profile
 	dbChar = KT.db.char
 end
@@ -187,7 +187,7 @@ function M:Update(id)
 	if not dbChar.collapsed then
 		for questID, button in pairs(KT.fixedButtons) do
 			if QuestHasPOIInfo(questID) then
-				local distSqr, onContinent = GetDistanceSqToQuest(button:GetID())
+				local distSqr, onContinent = C_QuestLog.GetDistanceSqToQuest(button:GetID())
 				if onContinent and distSqr <= minDistSqr then
 					minDistSqr = distSqr
 					closestQuestID = questID

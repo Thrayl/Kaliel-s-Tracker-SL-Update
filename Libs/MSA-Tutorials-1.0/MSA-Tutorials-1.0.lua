@@ -114,7 +114,7 @@ local function UpdateFrame(frame, i)
 			end
 		end
 	end
-	
+
 	-- Callbacks
 	if frame.data.onShow then
 		frame.data.onShow(frame.data, i)
@@ -129,7 +129,7 @@ local function UpdateFrame(frame, i)
 	frame:SetWidth(data.width + 16)
 	frame.TitleText:SetPoint('TOP', 0, -5)
 	frame.TitleText:SetText(data.title)
-	
+
 	-- Cache inline texture
 	local j, idx = 1, 1
 	local lastTex
@@ -149,7 +149,7 @@ local function UpdateFrame(frame, i)
 			break
 		end
 	end
-	
+
 	-- Image
 	for _, image in pairs(frame.images) do
 		image:Hide()
@@ -161,16 +161,16 @@ local function UpdateFrame(frame, i)
 		img:Show()
 		frame.images[i] = img
 	end
-	
+
 	-- Text
 	frame.text:SetPoint('TOP', frame, 0, -((data.image and 26 + data.imageY + data.imageHeight or 60) + data.textY))
 	frame.text:SetWidth(data.width - (2 * data.textX))
 	frame.text:SetText(data.text)
-	
+
 	local textHeight = round(frame.text:GetHeight())
 	if data.textHeight > textHeight then
 		textHeight = data.textHeight
-	end 
+	end
 	textHeight = textHeight - fmod(textHeight, 2)
 	frame:SetHeight((data.image and 56 + data.imageY + data.imageHeight or 90) + (data.text and data.textY + textHeight or 0) + 18)
 	frame.i = i
@@ -197,7 +197,7 @@ local function UpdateFrame(frame, i)
 	else
 		frame.button:Hide()
 	end
-	
+
 	-- Shine
 	if data.shine then
 		frame.shine:SetParent(data.shine)
@@ -209,7 +209,7 @@ local function UpdateFrame(frame, i)
 		frame.flash:Stop()
 		frame.shine:Hide()
 	end
-	
+
 	-- Buttons
 	if i == 1 then
 		frame.prev:Disable()
@@ -222,7 +222,7 @@ local function UpdateFrame(frame, i)
 	else
 		frame.next:Disable()
 	end
-	
+
 	-- Save
 	local sv = frame.data.key or frame.data.savedvariable
 	if sv then
@@ -263,13 +263,13 @@ local function NewFrame(data)
 		frame.text:SetFont(data.font, 12)
 	end
 	frame.text:SetJustifyH('LEFT')
-	
+
 	frame.prev = NewButton(frame, 'Prev', -1)
 	frame.next = NewButton(frame, 'Next', 1)
-	
+
 	frame.pageNum = frame:CreateFontString(nil, nil, 'GameFontHighlightSmall')
 	frame.pageNum:SetPoint('BOTTOM', 0, 10)
-	
+
 	frame:SetFrameStrata('DIALOG')
 	frame:SetClampedToScreen(true)
 	frame:EnableMouse(true)
@@ -289,7 +289,7 @@ local function NewFrame(data)
 	frame.button:SetPoint("CENTER")
 	frame.button:Hide()
 
-	frame.shine = CreateFrame('Frame')
+	frame.shine = CreateFrame('Frame', nil, frame, BackdropTemplateMixin and "BackdropTemplate")
 	frame.shine:SetBackdrop({edgeFile = 'Interface\\TutorialFrame\\UI-TutorialFrame-CalloutGlow', edgeSize = 16})
 	for i = 1, frame.shine:GetNumRegions() do
 		select(i, frame.shine:GetRegions()):SetBlendMode('ADD')
@@ -298,7 +298,7 @@ local function NewFrame(data)
 	local flash = frame.shine:CreateAnimationGroup()
 	flash:SetLooping('BOUNCE')
 	frame.flash = flash
-	
+
 	local anim = flash:CreateAnimation('Alpha')
 	anim:SetDuration(.75)
 	anim:SetFromAlpha(.7)
@@ -330,7 +330,7 @@ function Lib:TriggerTutorial(index, maxAdvance)
 		local sv = frame.data.key or frame.data.savedvariable
 		local table = frame.data.key and frame.data.savedvariable or _G
 		local last = sv and table[sv] or 0
-		
+
 		if index > last then
 			frame.unlocked = index
 			UpdateFrame(frame, (maxAdvance == true or not sv) and index or last + (maxAdvance or 1))
@@ -348,7 +348,7 @@ function Lib:ResetTutorial()
 			local table = frame.data.key and frame.data.savedvariable or _G
 			table[sv] = false
 		end
-		
+
 		frame:Hide()
 	end
 end

@@ -42,7 +42,7 @@ local OTF = ObjectiveTrackerFrame
 local overlay
 local overlayShown = false
 
-local _, numQuests = GetNumQuestLogEntries()
+local _, numQuests = C_QuestLog.GetNumQuestLogEntries()
 
 local OverlayFrameUpdate, OverlayFrameHide, GetModulesOptionsTable, MoveModule, SetSharedColor, IsSpecialLocale	-- functions
 
@@ -54,7 +54,7 @@ local defaults = {
 		maxHeight = 400,
 		frameScrollbar = true,
 		frameStrata = "LOW",
-		
+
 		bgr = "Solid",
 		bgrColor = { r=0, g=0, b=0, a=0.7 },
 		border = "None",
@@ -86,7 +86,7 @@ local defaults = {
 		hdrCollapsedTxt = 3,
 		hdrOtherButtons = true,
 		keyBindMinimize = "",
-		
+
 		qiBgrBorder = false,
 		qiXOffset = -5,
 		qiActiveButton = true,
@@ -112,7 +112,7 @@ local defaults = {
 		modulesOrder = {
 			"SCENARIO_CONTENT_TRACKER_MODULE",
 			"UI_WIDGET_TRACKER_MODULE",
-			"AUTO_QUEST_POPUP_TRACKER_MODULE",
+			"CAMPAIGN_QUEST_TRACKER_MODULE",
 			"QUEST_TRACKER_MODULE",
 			"BONUS_OBJECTIVE_TRACKER_MODULE",
 			"WORLD_QUEST_TRACKER_MODULE",
@@ -1369,7 +1369,7 @@ function KT:SetupOptions()
 	options.args.profiles.args.copyfrom.confirmText = warning
 
 	ACR:RegisterOptionsTable(addonName, options, nil)
-	
+
 	self.optionsFrame = {}
 	self.optionsFrame.general = ACD:AddToBlizOptions(addonName, self.title, nil, "general")
 	self.optionsFrame.modules = ACD:AddToBlizOptions(addonName, options.args.modules.name, self.title, "modules")
@@ -1451,8 +1451,8 @@ function GetModulesOptionsTable()
 			text = text.." *"
 		elseif module == "UI_WIDGET_TRACKER_MODULE" then
 			text = "[ "..ZONE.." ]"
-		elseif module == "AUTO_QUEST_POPUP_TRACKER_MODULE" then
-			text = "Popup "..text
+		elseif module == "CAMPAIGN_QUEST_TRACKER_MODULE" then
+		 	text = "Popup "..text
 		end
 
 		defaultModule = OTF.MODULES_UI_ORDER[i]
@@ -1461,8 +1461,8 @@ function GetModulesOptionsTable()
 			defaultText = defaultText.." *"
 		elseif defaultModule == UI_WIDGET_TRACKER_MODULE then
 			defaultText = "[ "..ZONE.." ]"
-		elseif defaultModule == AUTO_QUEST_POPUP_TRACKER_MODULE then
-			defaultText = "Popup "..defaultText
+		-- elseif defaultModule == AUTO_QUEST_POPUP_TRACKER_MODULE then
+		-- 	defaultText = "Popup "..defaultText
 		end
 
 		args["pos"..i] = {

@@ -22,13 +22,13 @@ local function SetHooks()
 	local bck_QuestLogQuests_AddQuestButton = QuestLogQuests_AddQuestButton
 	QuestLogQuests_AddQuestButton = function(prevButton, questLogIndex, poiTable, title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isBounty, isStory, isHidden, isScaling, layoutIndex)
 		if db.questShowTags then
-			local tagID, _ = GetQuestTagInfo(questID)
+			local _, tagID, _ = C_QuestLog.GetQuestTagInfo(questID)
 			title = KT:CreateQuestTag(level, tagID, frequency, suggestedGroup)..title
 		end
 		local button = bck_QuestLogQuests_AddQuestButton(prevButton, questLogIndex, poiTable, title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isBounty, isStory, isHidden, isScaling, layoutIndex)
 
 		local colorStyle
-		if IsQuestComplete(questID) then
+		if C_QuestLog.IsComplete(questID) then
 			colorStyle = OBJECTIVE_TRACKER_COLOR["Complete"]
 		elseif not db.colorDifficulty then
 			colorStyle = OBJECTIVE_TRACKER_COLOR["Header"]
@@ -42,7 +42,7 @@ local function SetHooks()
 
 	hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)
 		local colorStyle
-		if IsQuestComplete(self.questID) then
+		if C_QuestLog.IsComplete(self.questID) then
 			colorStyle = OBJECTIVE_TRACKER_COLOR["CompleteHighlight"]
 		elseif not db.colorDifficulty then
 			colorStyle = OBJECTIVE_TRACKER_COLOR["HeaderHighlight"]
@@ -51,10 +51,10 @@ local function SetHooks()
 			self.Text:SetTextColor(colorStyle.r, colorStyle.g, colorStyle.b)
 		end
 	end)
-	
+
 	hooksecurefunc("QuestMapLogTitleButton_OnLeave", function(self)
 		local colorStyle
-		if IsQuestComplete(self.questID) then
+		if C_QuestLog.IsComplete(self.questID) then
 			colorStyle = OBJECTIVE_TRACKER_COLOR["Complete"]
 		elseif not db.colorDifficulty then
 			colorStyle = OBJECTIVE_TRACKER_COLOR["Header"]
@@ -66,17 +66,17 @@ local function SetHooks()
 
 	-- DropDown
 	function QuestMapQuestOptionsDropDown_Initialize(self)	-- R
-		local questLogIndex = GetQuestLogIndexByID(self.questID);
+		local questLogIndex = C_QuestLog.GetLogIndexForQuestID(self.questID);
 		local info = MSA_DropDownMenu_CreateInfo();
 		info.isNotRadio = true;
 		info.notCheckable = true;
 
 		info.text = TRACK_QUEST;
-		if ( IsQuestWatched(questLogIndex) ) then
+		if ( QuestUtils_IsQuestWatched(questLogIndex) ) then
 			info.text = UNTRACK_QUEST;
 		end
 		info.disabled = (db.filterAuto[1])
-		info.func =function(_, questID) QuestMapQuestOptions_TrackQuest(questID) end;
+		info.func = function(_, questID) QuestMapQuestOptions_TrackQuest(questID) end;
 		info.arg1 = self.questID;
 		MSA_DropDownMenu_AddButton(info, MSA_DROPDOWNMENU_MENU_LEVEL);
 
@@ -85,14 +85,14 @@ local function SetHooks()
 		info.text = SHARE_QUEST;
 		info.func = function(_, questID) QuestMapQuestOptions_ShareQuest(questID) end;
 		info.arg1 = self.questID;
-		if ( not GetQuestLogPushable(questLogIndex) or not IsInGroup() ) then
+		if ( not C_QuestLog.IsPushableQuest(self.questID) or not IsInGroup() ) then
 			info.disabled = 1;
 		end
 		MSA_DropDownMenu_AddButton(info, MSA_DROPDOWNMENU_MENU_LEVEL);
 
 		info.disabled = false;
 
-		if CanAbandonQuest(self.questID) then
+		if C_QuestLog.CanAbandonQuest(self.questID) then
 			info.text = ABANDON_QUEST;
 			info.func = function(_, questID) QuestMapQuestOptions_AbandonQuest(questID) end;
 			info.arg1 = self.questID;
